@@ -1,0 +1,8 @@
+create venv with conda:
+    conda create --name credit python=3.11.4
+    conda activate credit
+
+
+install dependencies:
+    make install
+
