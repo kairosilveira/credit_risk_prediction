@@ -52,7 +52,7 @@ def plot_numerical_distribution(data, numerical_columns, target_column=None, fig
 
 
 
-def plot_boxplots(data, numerical_columns, target_column, pos_color, neg_color, figsize=(15, 10)):
+def plot_boxplots(data, numerical_columns, target_column, pos_color, neg_color, figsize=(15, 10), showfliers = False):
     """
     Plot boxplots for numerical columns with hue grouped by the target variable in subplots.
 
@@ -79,7 +79,7 @@ def plot_boxplots(data, numerical_columns, target_column, pos_color, neg_color, 
     colors = {0: neg_color, 1: pos_color}
 
     for i, column in enumerate(numerical_columns):
-        sns.boxplot(x=target_column, y=column, data=data, ax=axes[i], palette=colors)
+        sns.boxplot(x=target_column, y=column, data=data, ax=axes[i], palette=colors,showfliers = showfliers)
         axes[i].set_title(column)
         axes[i].set_xlabel(target_column)
         axes[i].set_ylabel(column)
