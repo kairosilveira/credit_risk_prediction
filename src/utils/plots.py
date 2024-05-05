@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import roc_curve, roc_auc_score
 
 
 def plot_numerical_distribution(data, numerical_columns, target_column=None, figsize=(15, 10), kde=True, color='skyblue'):
@@ -19,23 +20,17 @@ def plot_numerical_distribution(data, numerical_columns, target_column=None, fig
     - None
     """
 
-    # Calculate the number of rows and columns for the subplot grid
     num_plots = len(numerical_columns)
     nrows = math.ceil(num_plots / 3)
     ncols = min(3, num_plots)
 
-    # Create a new figure with the specified size
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 
-    # Flatten the axes array to simplify indexing
     axes = axes.flatten()
 
-    # Loop through numerical columns and plot distribution in subplots
     for i, column in enumerate(numerical_columns):
-        # If target_column is provided, plot grouped distribution
         if target_column:
             sns.histplot(data=data, x=column, hue=target_column, ax=axes[i], kde=kde, palette='Set2', edgecolor='black', bins=30)
-        # Otherwise, plot individual distributions
         else:
             sns.histplot(data=data[column], ax=axes[i], kde=kde, color=color, edgecolor='black', bins=30)
 
@@ -132,3 +127,60 @@ def plot_categorical_variables(df, categorical_columns,hue=None, figsize=(15, 15
     plt.show()
 
 
+def plot_roc_curve(y_true, y_probs, auc_score=None, title = 'Receiver Operating Characteristic (ROC) Curve', image_path = None):
+    """
+    Plot the Receiver Operating Characteristic (ROC) curve for binary classification.
+
+    Parameters:
+    - y_true : array-like of shape (n_samples,)
+        True binary labels.
+    - y_probs : array-like of shape (n_samples,)
+        Target scores or probabilities of the positive class.
+    - auc_score : float, optional (default=None)
+        Area under the ROC curve (AUC) score. If not provided, it will be computed from y_true and y_probs.
+
+    Returns:
+    None
+    """
+    fpr, tpr, thresholds = roc_curve(y_true, y_probs)
+    
+    if auc_score is None:
+        auc_score = roc_auc_score(y_true, y_probs)
+    
+    plt.figure(figsize=(6, 4))
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {auc_score:.4f})')
+    plt.plot([0, 1], [0, 1], color='gray', linestyle='--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title(title)
+    plt.legend(loc='lower right')
+    plt.grid(True)
+
+    if image_path:
+        plt.savefig(image_path)
+    else:
+        plt.show()
+
+
+
+def plot_feature_importance(model, feature_names, top_n=10, figsize=(10, 6)):
+    """
+    Plot feature importance for a Random Forest model.
+
+    Parameters:
+    - model: trained Random Forest model
+    - feature_names: list of feature names
+    - top_n: number of top features to display (default: 10)
+    - figsize: tuple specifying the figure size (default: (10, 6))
+    """
+    
+    importances = model.feature_importances_
+    indices = importances.argsort()[-top_n:]
+
+    plt.figure(figsize=figsize)
+    plt.title("Feature Importances")
+    plt.barh(range(len(indices)), importances[indices], color="b", align="center")
+    plt.yticks(range(len(indices)), [feature_names[i] for i in indices])
+    plt.xlabel("Relative Importance")
+    plt.gca().invert_yaxis()
+    plt.show()
