@@ -50,6 +50,6 @@ Special thanks to Home Credit for providing the dataset and inspiring this proje
 
 ## Contact
 
-For inquiries or suggestions, please contact [your_email@example.com](mailto:kairo.silveira.contato@gmail.com).
+For inquiries or suggestions, please contact [kairo.silveira.contato@gmail.com](mailto:kairo.silveira.contato@gmail.com).
 
 ---
